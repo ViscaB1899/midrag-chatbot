@@ -1,4 +1,5 @@
 flask
+gunicorn
 openai
 langchain
 langchain-community
@@ -10,5 +11,3 @@ google-api-python-client
 tiktoken
 python-docx
 pandas
-openpyxl
-gunicorn
