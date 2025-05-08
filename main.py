@@ -3,7 +3,7 @@ from chatbot import ChatBot
 import threading
 
 knowledge_files = ["הסבר על תהליך ההצטרפות 3.txt"]
-bot = ChatBot(knowledge_files, "openai_key.txt")
+bot = ChatBot(knowledge_files, None)
 threading.Thread(target=bot.load_knowledge_base).start()
 
 app = Flask(__name__)
