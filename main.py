@@ -1,0 +1,25 @@
+from flask import Flask, request, jsonify
+from chatbot import ChatBot
+import threading
+
+knowledge_files = ["הסבר על תהליך ההצטרפות 3.txt"]
+bot = ChatBot(knowledge_files, "openai_key.txt")
+threading.Thread(target=bot.load_knowledge_base).start()
+
+app = Flask(__name__)
+
+@app.route("/", methods=["POST"])
+def webhook():
+    data = request.get_json()
+    try:
+        question = data.get("message", {}).get("text", "")
+        if not question:
+            return jsonify({"text": "לא התקבלה שאלה תקינה."}), 400
+        answer = bot.ask(question)
+        return jsonify({"text": answer})
+    except Exception as e:
+        print(f"שגיאה: {e}")
+        return jsonify({"text": "אירעה שגיאה בעיבוד הבקשה."}), 500
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8080)

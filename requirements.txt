@@ -1,0 +1,13 @@
+flask
+openai
+langchain
+langchain-community
+faiss-cpu
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
+tiktoken
+python-docx
+pandas
+openpyxl
