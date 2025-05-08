@@ -7,19 +7,22 @@ import time
 import docx
 import pandas as pd
 from openai import OpenAI
-from google.colab import auth
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.memory import ConversationBufferMemory
+from google.oauth2 import service_account
 
 
 # מחלקה לחיבור לגוגל דרייב והורדת קבצים
 class DriveConnector:
     def __init__(self):
-        auth.authenticate_user()
-        self.drive_service = build('drive', 'v3')
+        credentials = service_account.Credentials.from_service_account_file(
+            "chat-bot-midrag-f72e0b10ca06.json",
+            scopes=["https://www.googleapis.com/auth/drive"]
+        )
+        self.drive_service = build('drive', 'v3', credentials=credentials)
 
     def get_file_content_by_name(self, file_name):
         results = self.drive_service.files().list(q=f"name='{file_name}'", fields="files(id)").execute()
@@ -35,10 +38,8 @@ class DriveConnector:
         while not done:
             _, done = downloader.next_chunk()
 
-        # החזרת התוכן כבייטים לקבצי Word ו-Excel ללא פענוח
         if file_name.endswith(('.docx', '.xlsx')):
             return file_content.getvalue()
-        # אחרת מחזירים טקסט מפוענח
         return file_content.getvalue().decode('utf-8')
 
 
